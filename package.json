@@ -1,0 +1,22 @@
+{
+  "name": "api-with-node",
+  "version": "1.0.0",
+  "description": "Node API with Twitter Express and Pug",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PokerEdge/api-with-node.git"
+  },
+  "author": "Reid Young",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PokerEdge/api-with-node/issues"
+  },
+  "homepage": "https://github.com/PokerEdge/api-with-node#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
