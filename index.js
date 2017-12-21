@@ -15,6 +15,7 @@ const Now = new Date();
 const tweetData = {
   staticData: [],
   timelineData: [],
+  friendsData: [],
   DMData: []
 };
 
@@ -29,11 +30,15 @@ T.get('users/profile_banner', { screen_name: config.screen_name },  function (er
   if (!err) {
     tweetData.staticData.profileImageURL = data.sizes.web_retina.url;
   }
-})
+});
 
+// Friends count
+T.get('followers/ids', { screen_name: config.screen_name },  function (err, data, res) {
+  tweetData.staticData.friends = data.ids.length;
+});
+
+// Timeline data
 T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
-
-  //Timeline data
 
   // *** Auth user avatar set from "normal" size to "bigger" size
   tweetData.staticData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
@@ -41,27 +46,16 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
   // *** Name of auth user
   tweetData.staticData.name = data[0].user.name;
 
-
-  // *******************************************************
-  // ***** iterable data is below this point: A TWEET ******
-  // *******************************************************
+  // ****************************************************************
+  // ***** iterable data is below: A TWEET in timelineData: [] ******
+  // ****************************************************************
 
   // *** Tweet text of auth user
   tweetData.timelineData.tweetText = data[0].text;
 
-  // *** Time of Tweet
-    //CONVERT TO TIME SINCE TWEET e.g. "4h"
-
-  // tweetData.timelineData.timeOfTweet = data[0].created_at;
+  // *** Time since Tweet
   tweetData.timelineData.timeOfTweet = moment(data[0].created_at).fromNow();
-
-  // console.log(tweetData.timelineData.timeOfTweet);
-
-  var dur = tweetData.timelineData.timeOfTweet;
-  console.log('Current time                 ', Now);
-  console.log('Tweet time altered by moment ', tweetData.timelineData.timeOfTweet);
-
-
+  
   // *** retweetCountOfTweet
   tweetData.timelineData.retweetCount = data[0].retweet_count;
 
@@ -70,24 +64,40 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
 
 });
 
-T.get('followers/ids', { screen_name: config.screen_name },  function (err, data, res) {
-  tweetData.staticData.friends = data.ids.length;
+// Following data
+T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
+
+  // ****************************************************************
+  // ***** iterable data is below: A FRIEND in friendsData: [] ******
+  // ****************************************************************
+
+  // *** Real name of friend
+  tweetData.friendsData.friendName = data.users[0].name;
+
+  // *** Screen name of friend
+  tweetData.friendsData.friendScreenName = data.users[0].screen_name;
+
+  // *** Avatar of friend (bigger)
+  tweetData.friendsData.friendAvatar = data.users[0].profile_image_url_https.replace("normal", "bigger");
+
+  // *** Is auth user following friend? (boolean)
+  tweetData.friendsData.isFriendFollowed = data.users[0].following;
+
 });
 
 T.get('direct_messages', { count: 5 }, function (err,data, res) {
 
-  // **************************
-  // **** ITERABLE DM DATA ****
-  // **************************
+  // *******************************************************
+  // ***** iterable data is below: A DM in DMData: [] ******
+  // *******************************************************
 
-
-  // Message sender's avatar
+  // *** Message sender's avatar
   tweetData.DMData.senderAvatar = data[0].sender.profile_image_url_https.replace("normal","bigger");
 
-  // Text from sender's message
+  // *** Text from sender's message
   tweetData.DMData.senderMessage = data[0].text;
 
-  // Time from DM being sent
+  // *** Time from DM being sent
   tweetData.DMData.timeOfDM = moment(data[0].created_at).fromNow();
 
 });
@@ -109,9 +119,16 @@ app.get('/', (req, res) => {
 
   // Following data (iterable)
     // Real name of friend
-    // Screen name of friend
-    // Avatar of friend (bigger)
+    res.locals.friendName = tweetData.friendsData.friendName;
 
+    // Screen name of friend
+    res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
+
+    // Avatar of friend (bigger)
+    res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
+
+    // Is friend followed
+    res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
 
   //DM data (iterable)
   res.locals.senderAvatar = tweetData.DMData.senderAvatar;
