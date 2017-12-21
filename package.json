@@ -19,11 +19,10 @@
   "homepage": "https://github.com/PokerEdge/api-with-node#readme",
   "dependencies": {
     "express": "^4.16.2",
-    "luxon": "^0.2.9",
     "pug": "^2.0.0-rc.4",
     "twit": "^2.2.9"
   },
   "devDependencies": {
-    "nodemon": "^1.13.3"
+    "nodemon": "^1.14.1"
   }
 }
