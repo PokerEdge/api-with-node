@@ -54,8 +54,8 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
   tweetData.timelineData.tweetText = data[0].text;
 
   // *** Time since Tweet
-  tweetData.timelineData.timeOfTweet = moment(data[0].created_at).fromNow();
-  
+  tweetData.timelineData.timeSinceTweet = moment(data[0].created_at).fromNow();
+
   // *** retweetCountOfTweet
   tweetData.timelineData.retweetCount = data[0].retweet_count;
 
@@ -115,30 +115,43 @@ app.get('/', (req, res) => {
   res.locals.tweetText = tweetData.timelineData.tweetText;
   res.locals.retweetCount = tweetData.timelineData.retweetCount;
   res.locals.likeCount = tweetData.timelineData.likeCount;
-  res.locals.timeOfTweet = tweetData.timelineData.timeOfTweet;
+  res.locals.timeSinceTweet = tweetData.timelineData.timeOfTweet;
 
   // Following data (iterable)
-    // Real name of friend
-    res.locals.friendName = tweetData.friendsData.friendName;
-
-    // Screen name of friend
-    res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
-
-    // Avatar of friend (bigger)
-    res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
-
-    // Is friend followed
-    res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
+  res.locals.friendName = tweetData.friendsData.friendName;
+  res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
+  res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
+  res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
 
   //DM data (iterable)
   res.locals.senderAvatar = tweetData.DMData.senderAvatar;
   res.locals.senderMessage = tweetData.DMData.senderMessage;
   res.locals.timeOfDM = tweetData.DMData.timeOfDM;
 
-  // console.log(res.locals);
-
-  //Can render the detructured tweet and DM as an argument to res.render()
   res.render('index');
+});
+
+// ***************************
+// ***** ERROR HANDLING ******
+// ***************************
+
+app.use((req, res, next) => {
+  let err = new Error("Page Not Found");
+  err.status = 404;
+  next(err);
+});
+
+app.use((req, res, next) => {
+  let err = new Error("Internal Server Error");
+  err.status = 500;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  res.locals.screen_name = config.screen_name;
+  res.locals.error = err;
+  res.status(err.status);
+  res.render('error')
 });
 
 app.listen(port, () => {

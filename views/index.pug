@@ -57,7 +57,7 @@ html(lang='en')
         .grid-33
           .app--section--heading
             strong #{friends}
-            h2 Following
+            h2 Followers
         .grid-33
           .app--section--heading
             h2 Direct Messages
@@ -65,7 +65,7 @@ html(lang='en')
         .app--section
           ul.app--tweet--list
             li
-              strong.app--tweet--timestamp #{timeOfTweet}
+              strong.app--tweet--timestamp #{timeSinceTweet}
               a.app--tweet--author
                 .app--avatar(style=`background-image: url(${userAvatarImage})`)
                   img(src=`background-image: url(${userAvatarImage})`)

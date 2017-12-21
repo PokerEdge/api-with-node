@@ -1,3 +1,5 @@
+/* HOME ROUTE STYLES */
+
 .app--section {
   padding-top: 2px;
 }
@@ -13,4 +15,19 @@
 
 .circle--header h1 {
   margin-top: 2px;
+}
+
+/* ERROR ROUTE STYLES */
+.error-container {
+  text-align: center;
+}
+
+.errorStyle {
+  color: rgb(29,161,242);
+  margin-top: 2%;
+}
+
+.fa-exclamation-circle {
+  color: rgb(29,161,242);
+  margin-top: 6%;
 }
