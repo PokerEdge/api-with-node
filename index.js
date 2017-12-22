@@ -4,7 +4,7 @@ const express = require('express');
 const config = require('./config')
 const Twit = require('twit');
 const moment = require('moment');
-// moment.format();
+moment().format();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +18,10 @@ const tweetData = {
   friendsData: [],
   DMData: []
 };
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 //Specifies Pug as template engine so Express renders Pug templates
 app.set('view engine', 'pug');
@@ -115,7 +119,7 @@ app.get('/', (req, res) => {
   res.locals.tweetText = tweetData.timelineData.tweetText;
   res.locals.retweetCount = tweetData.timelineData.retweetCount;
   res.locals.likeCount = tweetData.timelineData.likeCount;
-  res.locals.timeSinceTweet = tweetData.timelineData.timeOfTweet;
+  res.locals.timeSinceTweet = tweetData.timelineData.timeSinceTweet;
 
   // Following data (iterable)
   res.locals.friendName = tweetData.friendsData.friendName;
@@ -152,8 +156,4 @@ app.use((err, req, res, next) => {
   res.locals.error = err;
   res.status(err.status);
   res.render('error')
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
 });
