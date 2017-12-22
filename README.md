@@ -21,3 +21,6 @@ module.exports = {
 ```javascript
 npm start
 ```
+
+# WARNING
+#### Create your application with the same account name value that is enterred to complement the screen_name key in the config.js file.
