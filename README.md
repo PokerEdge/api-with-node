@@ -2,7 +2,7 @@
 Node API interacting with Twitter using Express and Pug
 
 # Configuring The Application
-#### Create a file called config.js within the root directory of the project file. The file should contain keys and secrets to your Twitter App, which can be found and generated at https://apps.twitter.com/, as well as your Twitter *screen name* as below showcased
+#### Create a file called config.js within the root directory of the project file. The file should contain keys and secrets to your Twitter App, which can be found and generated at https://apps.twitter.com/, as well as your Twitter *screen name* as below showcased. IMPORTANT: Your Twitter Application created to generate the below data requires an access token with RWD (read, write & direct message) permissions that you modify inside of the "Access Level" area of your Twitter Application.
 
 ###### config.js
 ```javascript
