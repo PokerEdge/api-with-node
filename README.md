@@ -15,8 +15,8 @@ module.exports = {
 }
 ```
 
-#Starting The Application
-#### Start the application by using 'npm start' or by using 'nodemon' if you have the package installed as a dev dependency. 'npm start' executes 'node index.js', the app's entry point.
+# Starting the Application
+#### Start the application by using 'npm start' or by using 'nodemon' if you have the package installed as a dev dependency. 'npm start' executes the script to run 'node index.js', which accesses the application's entry point.
 ###### terminal
 ```javascript
 npm start
