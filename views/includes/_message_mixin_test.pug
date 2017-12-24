@@ -1,0 +1,10 @@
+
+a linkText
+mixin message(messageObject = {})
+  .error-container
+    p #{messageObject.timeOfDM}
+    p #{messageObject.senderAvatar}
+    p #{messageObject.senderMessage}
+
+each dm in appData
+  +message(dm)

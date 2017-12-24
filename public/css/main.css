@@ -22,12 +22,12 @@
   text-align: center;
 }
 
-.errorStyle {
+.errorStyle,
+.fa-exclamation-circle {
   color: rgb(29,161,242);
   margin-top: 2%;
 }
 
-.fa-exclamation-circle {
-  color: rgb(29,161,242);
-  margin-top: 6%;
+.error.button {
+  margin-top: 4%;
 }

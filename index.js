@@ -89,11 +89,12 @@ T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (
 
 });
 
-T.get('direct_messages', { count: 5 }, function (err,data, res) {
+T.get('direct_messages', { count : 5 }, function (err,data, res) {
 
   // *******************************************************
   // ***** iterable data is below: A DM in DMData: [] ******
   // *******************************************************
+
 
   // *** Message sender's avatar
   tweetData.DMData.senderAvatar = data[0].sender.profile_image_url_https.replace("normal","bigger");
@@ -135,6 +136,85 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+// ************************************
+// ***** ITERATION SANDBOX ROUTE ******
+// ************************************
+
+const appData = [];
+
+T.get('direct_messages', { count : 5 }, function (err,data, res) {
+
+  // *******************************************************
+  // ***** iterable data is below: A DM in appData: [] ******
+  // *******************************************************
+
+  for( let i = 0; i < 4; i++ ){
+
+    let DMData = {};
+
+    // *** Message sender's avatar
+    DMData.senderAvatar = data[i].sender.profile_image_url_https.replace("normal","bigger");
+
+    // *** Text from sender's message
+    DMData.senderMessage = data[i].text;
+
+    // *** Time from DM being sent
+    DMData.timeOfDM = moment(data[i].created_at).fromNow();
+
+    appData.push(DMData);
+
+  }
+
+});
+
+app.get('/sandbox', (req,res) => {
+
+  //Non iterable data
+  res.locals.screen_name = config.screen_name;
+  res.locals.friends = tweetData.staticData.friends;
+  res.locals.profileImageURL = tweetData.staticData.profileImageURL;
+  res.locals.userAvatarImage = tweetData.staticData.userAvatarImage;
+  res.locals.name = tweetData.staticData.name;
+
+  // Timeline data (iterable)
+  res.locals.tweetText = tweetData.timelineData.tweetText;
+  res.locals.retweetCount = tweetData.timelineData.retweetCount;
+  res.locals.likeCount = tweetData.timelineData.likeCount;
+  res.locals.timeSinceTweet = tweetData.timelineData.timeSinceTweet;
+
+  // Following data (iterable)
+  res.locals.friendName = tweetData.friendsData.friendName;
+  res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
+  res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
+  res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
+
+  //DM data (iterable)
+  // res.locals.senderAvatar = tweetData.DMData.senderAvatar;
+  // res.locals.senderMessage = tweetData.DMData.senderMessage;
+  // res.locals.timeOfDM = tweetData.DMData.timeOfDM;
+
+
+  // let tweetObject = function buildTweetObject(){
+  //   return {
+  //   //   T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
+  //   //
+  //   //     // *** Auth user avatar set from "normal" size to "bigger" size
+  //   //     tweetData.staticData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+  //   //   })
+  //
+  //   senderAvatar : appData.DMData.senderAvatar,
+  //   senderMessage : appData.DMData.senderMessage,
+  //   timeOfDM : appData.DMData.timeOfDM
+  //   }
+  // }
+
+  console.log( appData[0] );
+
+  res.render('sandbox', { appData } );
+});
+
+
+
 // ***************************
 // ***** ERROR HANDLING ******
 // ***************************
@@ -153,7 +233,8 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   res.locals.screen_name = config.screen_name;
+  res.locals.profileImageURL = tweetData.staticData.profileImageURL;
   res.locals.error = err;
-  res.status(err.status);
-  res.render('error')
+  res.locals.errorStatus = err.status;
+  res.render('error');
 });
