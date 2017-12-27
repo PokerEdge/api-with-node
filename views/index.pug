@@ -17,47 +17,11 @@ block content
     .grid-33
       .app--section
         ul.app--tweet--list
-          li
-            include includes/timeline.pug
-          li
-            include includes/timeline.pug
+          include includes/_timeline_mixin_test.pug
     .grid-33
       .app--section
         ul.app--user--list
-          li
-            include includes/followers.pug
-          li
-            include includes/followers.pug
-          li
-            .circle--fluid
-              .circle--fluid--cell.circle--fluid--primary
-                a.app--tweet--author
-                  .app--avatar(style='background-image: url(images/f-spore.png)')
-                    img(src='images/f-spore.png')
-                  h4 Jill Spore
-                  p @jillspore
-              .circle--fluid--cell
-                a.button.button-text Unfollow
-          li
-            .circle--fluid
-              .circle--fluid--cell.circle--fluid--primary
-                a.app--tweet--author
-                  .app--avatar(style='background-image: url(images/f-spore.png)')
-                    img(src='images/f-spore.png')
-                  h4 Jill Spore
-                  p @jillspore
-              .circle--fluid--cell
-                a.button Follow
-          li
-            .circle--fluid
-              .circle--fluid--cell.circle--fluid--primary
-                a.app--tweet--author
-                  .app--avatar(style='background-image: url(images/f-spore.png)')
-                    img(src='images/f-spore.png')
-                  h4 Jill Spore
-                  p @jillspore
-              .circle--fluid--cell
-                a.button.button-text Unfollow
+          include includes/_followers_mixin_test.pug
     .grid-33
       .app--section
         ul.app--message--list
@@ -66,27 +30,9 @@ block content
               | Conversation with 
               a #{name}
             ul.app--message--conversation
-              include includes/directMessages.pug
-              li.app--message--me
-                .app--avatar(style='background-image: url(images/m-spore.png)')
-                  img(src='images/m-spore.png')
-                p.app--message--text
-                  | Great! How about you? Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                p.app--message--timestamp 2 hours ago
-              li.app--message
-                .app--avatar(style='background-image: url(images/f-spore.png)')
-                  img(src='images/f-spore.png')
-                p.app--message--text Fantastic! You wanna grab lunch?
-                p.app--message--timestamp 2 hours ago
-              li.app--message--me
-                .app--avatar(style='background-image: url(images/m-spore.png)')
-                  img(src='images/m-spore.png')
-                p.app--message--text Totes mcgotes. How about Mackey's?
-                p.app--message--timestamp 1 hour ago
-              li.app--message
-                .app--avatar(style='background-image: url(images/f-spore.png)')
-                  img(src='images/f-spore.png')
-                p.app--message--text Aww yeah.. I'm craving a Triple Quarter Mack!
-                p.app--message--timestamp 1 hour ago
+              //- MISSING LOGIC FOR IF SENDER OR SENT MESSAGE IN MESSAGE INCLUDE: --me and proper sender/sent avatar
+              //- e.g. li.app--message--me or li.app--message
+              //- --me shows a blue background text, blank shows purple background text
+              include includes/_message_mixin_test.pug
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
   script(src='./js/app.js')

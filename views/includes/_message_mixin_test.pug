@@ -1,10 +1,9 @@
+mixin createMessage(messageObject = {})
+  li.app--message
+    .app--avatar(style=`background-image: url(${messageObject.senderAvatar})`)
+      img(src=`${messageObject.senderAvatar}`)
+    p.app--message--text #{messageObject.senderMessage}
+    p.app--message--timestamp #{messageObject.timeOfDM}
 
-a linkText
-mixin message(messageObject = {})
-  .error-container
-    p #{messageObject.timeOfDM}
-    p #{messageObject.senderAvatar}
-    p #{messageObject.senderMessage}
-
-each dm in appData
-  +message(dm)
+each dm in msgData
+  +createMessage(dm)

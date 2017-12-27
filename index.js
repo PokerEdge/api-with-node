@@ -133,22 +133,121 @@ app.get('/', (req, res) => {
   res.locals.senderMessage = tweetData.DMData.senderMessage;
   res.locals.timeOfDM = tweetData.DMData.timeOfDM;
 
-  res.render('index');
+  res.render('index', { twitterPostData, followersData, msgData });
 });
+
+
+
+
 
 // ************************************
 // ***** ITERATION SANDBOX ROUTE ******
 // ************************************
 
-const appData = [];
+const twitterPostData = [];
+const followersData = [];
+const msgData = [];
+
+// STATIC DATA GUIDELINES
+//Using includes for this data, not mixin & use res.locals, not an object
+const staticObject = [];
+
+// T.get('users/profile_banner', { screen_name: config.screen_name },  function (err, data, res) {
+//   //Prevent 404 error if no profile image is rendered for the auth user
+//   if (!err) {
+//     twitterPostData.staticData.profileImageURL = data.sizes.web_retina.url;
+//   }
+// });
+
+// // Friends count
+// T.get('followers/ids', { screen_name: config.screen_name },  function (err, data, res) {
+//   twitterPostData.staticData.friends = data.ids.length;
+// });
+
+// Timeline data
+T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
+
+//   let staticData = {};
+//
+//   if(!staticData.userAvatarImage || !staticData.name){
+//
+//     // *** Auth user avatar set from "normal" size to "bigger" size
+//     staticData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+//
+//     // *** Name of auth user
+//     staticData.name = data[0].user.name;
+//
+//     appData.push(staticData);
+//
+// }
+
+  // ****************************************************************
+  // ***** iterable data is below: A TWEET in timelineData: [] ******
+  // ****************************************************************
+
+  for( let i = 0; i < 5; i++ ){
+
+    let timelineData = {};
+
+    // *** Auth user avatar set from "normal" size to "bigger" size
+    timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+
+    // *** Name of auth user
+    timelineData.name = data[0].user.name;
+
+    // *** Tweet text of auth user
+    timelineData.tweetText = data[i].text;
+
+    // *** Time since Tweet
+    timelineData.timeSinceTweet = moment(data[i].created_at).fromNow();
+
+    // *** retweetCountOfTweet
+    timelineData.retweetCount = data[i].retweet_count;
+
+    // *** likeCountOfTweet
+    timelineData.likeCount = data[i].favorite_count;
+
+    twitterPostData.push(timelineData);
+
+  }
+
+});
+
+// Following data
+T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
+
+  // ****************************************************************
+  // ***** iterable data is below: A FRIEND in friendsData: [] ******
+  // ****************************************************************
+
+  for( let i = 0; i < 5; i++ ){
+
+    let friendsData = {};
+
+    // *** Real name of friend
+    friendsData.friendName = data.users[i].name;
+
+    // *** Screen name of friend
+    friendsData.friendScreenName = data.users[i].screen_name;
+
+    // *** Avatar of friend (bigger)
+    friendsData.friendAvatar = data.users[i].profile_image_url_https.replace("normal", "bigger");
+
+    // *** Is auth user following friend? (boolean)
+    friendsData.isFriendFollowed = data.users[i].following;
+
+    followersData.push(friendsData);
+  }
+
+});
 
 T.get('direct_messages', { count : 5 }, function (err,data, res) {
 
   // *******************************************************
-  // ***** iterable data is below: A DM in appData: [] ******
+  // ***** iterable data is below: A DM in msgData: [] ******
   // *******************************************************
 
-  for( let i = 0; i < 4; i++ ){
+  for( let i = 0; i < 5; i++ ){
 
     let DMData = {};
 
@@ -161,13 +260,19 @@ T.get('direct_messages', { count : 5 }, function (err,data, res) {
     // *** Time from DM being sent
     DMData.timeOfDM = moment(data[i].created_at).fromNow();
 
-    appData.push(DMData);
+    msgData.push(DMData);
 
   }
 
 });
 
 app.get('/sandbox', (req,res) => {
+
+  console.log(msgData);
+  console.log('************');
+  console.log(followersData);
+  console.log('************');
+  console.log(twitterPostData);
 
   //Non iterable data
   res.locals.screen_name = config.screen_name;
@@ -177,16 +282,16 @@ app.get('/sandbox', (req,res) => {
   res.locals.name = tweetData.staticData.name;
 
   // Timeline data (iterable)
-  res.locals.tweetText = tweetData.timelineData.tweetText;
-  res.locals.retweetCount = tweetData.timelineData.retweetCount;
-  res.locals.likeCount = tweetData.timelineData.likeCount;
-  res.locals.timeSinceTweet = tweetData.timelineData.timeSinceTweet;
+  // res.locals.tweetText = tweetData.timelineData.tweetText;
+  // res.locals.retweetCount = tweetData.timelineData.retweetCount;
+  // res.locals.likeCount = tweetData.timelineData.likeCount;
+  // res.locals.timeSinceTweet = tweetData.timelineData.timeSinceTweet;
 
   // Following data (iterable)
-  res.locals.friendName = tweetData.friendsData.friendName;
-  res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
-  res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
-  res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
+  // res.locals.friendName = tweetData.friendsData.friendName;
+  // res.locals.friendScreenName = tweetData.friendsData.friendScreenName;
+  // res.locals.friendAvatar = tweetData.friendsData.friendAvatar;
+  // res.locals.isFriendFollowed = tweetData.friendsData.isFriendFollowed;
 
   //DM data (iterable)
   // res.locals.senderAvatar = tweetData.DMData.senderAvatar;
@@ -208,16 +313,16 @@ app.get('/sandbox', (req,res) => {
   //   }
   // }
 
-  console.log( appData[0] );
+  // console.log( appData[0] );
 
-  res.render('sandbox', { appData } );
+  res.render('sandbox', { twitterPostData, followersData, msgData } );
 });
 
 
 
-// ***************************
-// ***** ERROR HANDLING ******
-// ***************************
+// **************************
+// ***** ERROR HANDLING *****
+// **************************
 
 app.use((req, res, next) => {
   let err = new Error("Page Not Found");
