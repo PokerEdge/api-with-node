@@ -17,11 +17,11 @@ block content
     .grid-33
       .app--section
         ul.app--tweet--list
-          include includes/_timeline_mixin_test.pug
+          include includes/mixins/_timeline_mixin.pug
     .grid-33
       .app--section
         ul.app--user--list
-          include includes/_followers_mixin_test.pug
+          include includes/mixins/_followers_mixin.pug
     .grid-33
       .app--section
         ul.app--message--list
@@ -30,9 +30,6 @@ block content
               | Conversation with 
               a #{name}
             ul.app--message--conversation
-              //- MISSING LOGIC FOR IF SENDER OR SENT MESSAGE IN MESSAGE INCLUDE: --me and proper sender/sent avatar
-              //- e.g. li.app--message--me or li.app--message
-              //- --me shows a blue background text, blank shows purple background text
-              include includes/_message_mixin_test.pug
+              include includes/mixins/_message_mixin.pug
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
   script(src='./js/app.js')

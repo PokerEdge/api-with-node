@@ -5,6 +5,7 @@
   const $tweetTextArea = $('#tweet-textarea');
   const $tweetLengthDisplay = $('#tweet-char');
   const $tweetStyle = $('.app--tweet--char');
+  const maxTweetLength = 280;
   let tweetLength;
 
   const $tweetButton = $('.button-primary');
@@ -13,13 +14,13 @@
   $tweetTextArea.keyup(function(){
 
     tweetLength = $tweetTextArea.val().length;
-    $tweetLengthDisplay.text(280 - tweetLength);
+    $tweetLengthDisplay.text(maxTweetLength - tweetLength);
 
-    if ( tweetLength > 280 && !($tweetStyle.hasClass('invalidLength')) ){
+    if ( tweetLength > maxTweetLength && !($tweetStyle.hasClass('invalidLength')) ){
       $tweetStyle.addClass('invalidLength');
     }
 
-    if ( tweetLength <= 280 && $tweetStyle.hasClass('invalidLength') ){
+    if ( tweetLength <= maxTweetLength && $tweetStyle.hasClass('invalidLength') ){
       $tweetStyle.removeClass('invalidLength');
     }
 
@@ -33,7 +34,7 @@
     console.log( $tweetTextArea.val() );
 
     //Prevent tweet from sending if tweet length is too long
-    if (tweetLength > 280){
+    if (tweetLength > maxTweetLength){
 
       //Change to error style
       console.log("Error: Tweet is too long!")
@@ -46,7 +47,7 @@
 
       //Resets for after valid submission
       $tweetTextArea.val('');
-      $tweetLengthDisplay.text(280);
+      $tweetLengthDisplay.text(maxTweetLength);
     }
   });
 

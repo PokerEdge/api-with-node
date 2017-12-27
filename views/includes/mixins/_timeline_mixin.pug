@@ -2,10 +2,10 @@ mixin createTimelineElement(tweetObject = {})
   li
     strong.app--tweet--timestamp #{tweetObject.timeSinceTweet}
     a.app--tweet--author
-      .app--avatar(style=`background-image: url(${tweetObject.userAvatarImage})`)
-        img(src=`background-image: url(${tweetObject.userAvatarImage})`)
-      h4 #{tweetObject.name}
-      |  @#{tweetObject.screen_name}
+      .app--avatar(style=`background-image: url(${userAvatarImage})`)
+        img(src=`background-image: url(${userAvatarImage})`)
+      h4 #{name}
+      |  @#{screen_name}
     p #{tweetObject.tweetText}
     ul.app--tweet--actions.circle--list--inline
       li

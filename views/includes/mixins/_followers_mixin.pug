@@ -8,9 +8,10 @@ mixin createFollower(followerObject = {})
           h4 #{followerObject.friendName}
           p @#{followerObject.friendScreenName}
       .circle--fluid--cell
-        if isFriendFollowed
+        //- LOGIC IS NOT NECESSARY NOW, BUT WILL BE VALUABLE WITH APPLICATION EXPANSION
+        if followerObject.isFriendFollowed
           a.button.button-text Unfollow
-        else if !isFriendFollowed
+        else if followerObject.isFriendFollowed
           a.button Follow
 
 each follower in followersData
