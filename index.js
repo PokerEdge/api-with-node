@@ -28,6 +28,12 @@ io.sockets.on('connection', function(socket){
   socket.on('disconnect', function(data){
     console.log('A user has disconnected');
   });
+
+  // //Post tweet to Timeline
+  // socket.on('tweet' function(data){
+  //   io.sockets.emit('new tweet', { tweet: data} );
+  // });
+
 });
 
 const T = Twit(config);

@@ -1,7 +1,7 @@
 // ~function(){
   'use strict';
 
-  // var socket = io();
+  var socket = io.connect();
 
   // $('form').submit(function(){
   //   socket.emit('chat message', $('#m').val());
@@ -34,11 +34,8 @@
   });
 
 
-  $tweetButton.click(function(e){
+  $tweetButton.submit(function(e){
     e.preventDefault();
-
-    //Log tweet text
-    console.log( $tweetTextArea.val() );
 
     //Prevent tweet from sending if tweet length is too long
     if (tweetLength > maxTweetLength){
@@ -48,9 +45,19 @@
 
     } else {
 
-      //Submit validated data as POST request
-        //Text of Tweet
-        //Time of Tweet
+      //Log tweet text
+      console.log( $tweetTextArea.val() );
+
+      //Submit validated data as POST request (this happens and is emitted to index.js)
+        //The post request after a "tweet" (just the text) is emitted to index.js should also contain
+        //the following data that is acquired within index.js
+          //Text of Tweet (emitted by socket on validated form submission)
+          //Time of Tweet
+          //username
+          //screen_name
+          //userAvatarImage
+          //retweetCountOfTweet
+          //likeCountOfTweet
 
       //Resets for after valid submission
       $tweetTextArea.val('');
