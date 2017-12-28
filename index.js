@@ -1,28 +1,34 @@
-//Express middleware and routing
-
+// Express initializes app to be a function handler
 const express = require('express');
+const app = express();
+
+// Create Node.JS server and use express app as event emitter
+const http = require('http').Server(app);
+
+// Mount io onto Node.JS http server to open stream/sockets/etc. depending on browser
+const io = require('socket.io')(http);
+
+// Import config file information (sensitive user data and screen name)
 const config = require('./config')
+
 const Twit = require('twit');
 const moment = require('moment');
-moment().format();
 
-const app = express();
 const port = process.env.PORT || 3000;
 
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
 const T = Twit(config);
-const Now = new Date();
 
 const staticData = [];
 const twitterPostData = [];
 const followersData = [];
 const msgData = [];
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
 app.set('view engine', 'pug');
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 // ****************************
 // ***** GET DATA FOR APP *****
@@ -64,7 +70,8 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
     timelineData.tweetText = data[i].text;
 
     // *** Time since Tweet
-    timelineData.timeSinceTweet = moment(data[i].created_at).fromNow();
+      // 'Thu Dec 21 17:10:36 +0000 2017'
+    timelineData.timeSinceTweet = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
 
     // *** retweetCountOfTweet
     timelineData.retweetCount = data[i].retweet_count;
@@ -118,7 +125,7 @@ T.get('direct_messages', { count: 5 }, function (err,data, res) {
     DMData.senderMessage = data[i].text;
 
     // *** Time from DM being sent
-    DMData.timeOfDM = moment(data[i].created_at).fromNow();
+    DMData.timeOfDM = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
 
     msgData.push(DMData);
 
@@ -142,9 +149,24 @@ app.get('/', (req, res) => {
   res.render('index', { twitterPostData, followersData, msgData });
 });
 
+//On Submit
+  // pop tweetObject off array of tweetObjects
+  // format the post request's tweet object using the below listed variables
+  // push this status update onto the array of tweetObjects
+//Create new tweet object
+  // timeSinceTweet, userAvatarImage, name, screen_name,
+    // tweetText (also argument of request), retweetCount, likeCount
+T.post('statuses/update', )
+
 // **************************
 // ***** ERROR HANDLING *****
 // **************************
+
+app.use((req, res, next) => {
+  let err = new Error("Duplicate Tweet");
+  err.status = 403;
+  next(err);
+});
 
 app.use((req, res, next) => {
   let err = new Error("Page Not Found");
