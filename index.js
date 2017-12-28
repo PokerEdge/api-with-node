@@ -3,10 +3,10 @@ const express = require('express');
 const app = express();
 
 // Create Node.JS server and use express app as event emitter
-const http = require('http').Server(app);
+const server = require('http').createServer(app);
 
 // Mount io onto Node.JS http server to open stream/sockets/etc. depending on browser
-const io = require('socket.io')(http);
+const io = require('socket.io').listen(server);
 
 // Import config file information (sensitive user data and screen name)
 const config = require('./config')
@@ -16,8 +16,18 @@ const moment = require('moment');
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+io.sockets.on('connection', function(socket){
+  // Events we want to emit go into here
+
+  console.log('A user has connected');
+
+  socket.on('disconnect', function(data){
+    console.log('A user has disconnected');
+  });
 });
 
 const T = Twit(config);
@@ -156,7 +166,21 @@ app.get('/', (req, res) => {
 //Create new tweet object
   // timeSinceTweet, userAvatarImage, name, screen_name,
     // tweetText (also argument of request), retweetCount, likeCount
-T.post('statuses/update', )
+
+// app.post('/', (req, res) => {
+//     let T = new Twit(config);
+//     T.post('statuses/update', { status: req.body.newTweet }, (err, data) => {
+//         if (err) return res.send(err);
+//         let tweetData = {};
+//         tweetData.picture = data.user.profile_image_url;
+//         tweetData.author = '<h4>' + data.user.name + '</h4> @' + data.user.screen_name;
+//         tweetData.date = new Date(data.created_at).toLocaleString();
+//         tweetData.like = data.favorite_count;
+//         tweetData.retweet = data.retweet_count;
+//         tweetData.message = data.text;
+//         res.send(tweetData);
+//     });
+// });
 
 // **************************
 // ***** ERROR HANDLING *****
