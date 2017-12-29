@@ -29,7 +29,17 @@ io.sockets.on('connection', function(socket){
     console.log('A user has disconnected');
   });
 
-  // //Post tweet to Timeline
+  //Post tweet to Timeline
+  //Submit validated data as POST request (this happens and is emitted to index.js)
+    //The post request after a "tweet" (just the text) is emitted to index.js should also contain
+    //the following data that is acquired within index.js
+      //Text of Tweet (emitted by socket on validated form submission)
+      //Time of Tweet
+      //username
+      //screen_name
+      //userAvatarImage
+      //retweetCountOfTweet
+      //likeCountOfTweet
   // socket.on('tweet' function(data){
   //   io.sockets.emit('new tweet', { tweet: data} );
   // });

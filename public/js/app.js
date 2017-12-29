@@ -3,23 +3,17 @@
 
   var socket = io.connect();
 
-  // $('form').submit(function(){
-  //   socket.emit('chat message', $('#m').val());
-  //   $('#m').val('');
-  //   return false;
-  // });
-
+  const $tweetForm = $('#tweetForm');
   const $tweetTextArea = $('#tweet-textarea');
   const $tweetLengthDisplay = $('#tweet-char');
   const $tweetStyle = $('.app--tweet--char');
   const maxTweetLength = 280;
   let tweetLength;
 
-  const $tweetButton = $('.button-primary');
-
   //Handler to manage Tweet length and styles
-  $tweetTextArea.keyup(function(){
+  $tweetForm.on('keyup', function(){
 
+    //tweetLength initializes on page load as 1 in Firefox, but as 0 in Chrome
     tweetLength = $tweetTextArea.val().length;
     $tweetLengthDisplay.text(maxTweetLength - tweetLength);
 
@@ -34,13 +28,12 @@
   });
 
 
-  $tweetButton.submit(function(e){
-    e.preventDefault();
+  $tweetForm.on('submit', function(e) {
 
     //Prevent tweet from sending if tweet length is too long
     if (tweetLength > maxTweetLength){
 
-      //Change to error style
+      //Change to error style or modal pop up
       console.log("Error: Tweet is too long!")
 
     } else {
@@ -48,21 +41,14 @@
       //Log tweet text
       console.log( $tweetTextArea.val() );
 
-      //Submit validated data as POST request (this happens and is emitted to index.js)
-        //The post request after a "tweet" (just the text) is emitted to index.js should also contain
-        //the following data that is acquired within index.js
-          //Text of Tweet (emitted by socket on validated form submission)
-          //Time of Tweet
-          //username
-          //screen_name
-          //userAvatarImage
-          //retweetCountOfTweet
-          //likeCountOfTweet
+      // //emit tweet text to index.js
+      // socket.emit('tweet', $tweetTextArea.val());
 
       //Resets for after valid submission
       $tweetTextArea.val('');
       $tweetLengthDisplay.text(maxTweetLength);
     }
+    e.preventDefault();
   });
 
 
