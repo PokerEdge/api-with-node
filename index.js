@@ -40,9 +40,12 @@ io.sockets.on('connection', function(socket){
       //userAvatarImage
       //retweetCountOfTweet
       //likeCountOfTweet
-  // socket.on('tweet' function(data){
-  //   io.sockets.emit('new tweet', { tweet: data} );
-  // });
+  socket.on('tweet', function(data){
+    // io.sockets.emit('new tweet', { tweet: data} );
+
+    // Logs out the tweet text in server console
+    console.log(data);
+  });
 
 });
 
