@@ -29,6 +29,7 @@ io.sockets.on('connection', function(socket){
     console.log('A user has disconnected');
   });
 
+  // "Send message"
   //Post tweet to Timeline
   //Submit validated data as POST request (this happens and is emitted to index.js)
     //The post request after a "tweet" (just the text) is emitted to index.js should also contain
@@ -41,10 +42,13 @@ io.sockets.on('connection', function(socket){
       //retweetCountOfTweet
       //likeCountOfTweet
   socket.on('tweet', function(data){
-    // io.sockets.emit('new tweet', { tweet: data} );
 
     // Logs out the tweet text in server console
     console.log(data);
+
+    //CREATES AND SENDS TWEET WITH THIS HANDLER: post request that is inside of emitter
+    io.sockets.emit('new tweet', { tweet: data} ); //let's pass tweet data to client
+
   });
 
 });

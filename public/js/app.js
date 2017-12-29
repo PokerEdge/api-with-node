@@ -4,6 +4,7 @@
   const socket = io.connect();
 
   const $tweetForm = $('#tweetForm');
+  const $timeline = $('.app--tweet--list'); // The ul of timeline list-items
   const $tweetTextArea = $('#tweet-textarea');
   const $tweetLengthDisplay = $('#tweet-char');
   const $tweetStyle = $('.app--tweet--char');
@@ -30,6 +31,7 @@
 
   $tweetForm.on('submit', function(e) {
 
+    e.preventDefault();
 
     if (tweetLength > maxTweetLength){ // Invalid tweet
 
@@ -44,8 +46,14 @@
       $tweetTextArea.val('');
       $tweetLengthDisplay.text(maxTweetLength);
     }
-    e.preventDefault();
+
   });
 
+  socket.on('new tweet', function(data){
 
+    // Prepend what was actually tweeted with the T.post request
+    // Data comes from socket w data param
+    $timeline.prepend('<div>' + data.tweet + '</div>');
+
+  });
 // }();
