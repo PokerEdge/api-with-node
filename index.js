@@ -12,7 +12,14 @@ const io = require('socket.io').listen(server);
 const config = require('./config')
 
 const Twit = require('twit');
+const T = Twit(config);
+
 const moment = require('moment');
+
+const staticData = [];
+const twitterPostData = [];
+const followersData = [];
+const msgData = [];
 
 const port = process.env.PORT || 3000;
 
@@ -29,7 +36,7 @@ io.sockets.on('connection', function(socket){
     console.log('A user has disconnected');
   });
 
-  // "Send message"
+  // "Send message" as per Traversy
   //Post tweet to Timeline
   //Submit validated data as POST request (this happens and is emitted to index.js)
     //The post request after a "tweet" (just the text) is emitted to index.js should also contain
@@ -43,22 +50,84 @@ io.sockets.on('connection', function(socket){
       //likeCountOfTweet
   socket.on('tweet', function(data){
 
-    // Logs out the tweet text in server console
-    console.log(data);
+    // // Logs out the tweet text in server console
+    // console.log(data);
 
     //CREATES AND SENDS TWEET WITH THIS HANDLER: post request that is inside of emitter
-    io.sockets.emit('new tweet', { tweet: data} ); //let's pass tweet data to client
+      if(data){
+        T.post('statuses/update',{status: data}, function(){
 
-  });
+          let timelineData = {};
+
+          // tweetText
+          timelineData.tweetText = data;
+
+          console.log(data); //Shows tweet
+
+          T.get('statuses/user_timeline', { screen_name: config.screen_name },  function (err, data, res) {
+
+            if(err){
+              //Handle error with a redirect
+            }
+
+            // userAvatarImage
+            timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+
+            // name
+            timelineData.name = data[0].user.name;
+
+            // timeSinceTweet
+            timelineData.timeSinceTweet = moment(data.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
+
+            // // retweetCount
+            // timelineData.retweetCount = data.retweet_count;
+            //
+            // // likeCount
+            // timelineData.likeCount = data.favorite_count;
+
+          });
+
+          //Data passed back to the front end to populate a tweet object
+          io.sockets.emit('new tweet', { timelineData });
+
+          timelineData = {};
+
+        });
+        // // , function(){
+        //
+        //
+        //   //Create tweet object
+        //   timelineData = [];
+        //
+        //   console.log(data);
+        //
+        //   // // userAvatarImage
+        //   // timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+        //   //
+        //   // // name
+        //   // timelineData.name = data[0].user.name;
+        //   //
+        //   // // tweetText
+        //   // timelineData.tweetText = data.tweet;
+        //   //
+        //   // // timeSinceTweet
+        //   // timelineData.timeSinceTweet = moment(data.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
+        //   //
+        //   // // retweetCount
+        //   // timelineData.retweetCount = data.retweet_count;
+        //   //
+        //   // // likeCount
+        //   // timelineData.likeCount = data.favorite_count;
+        //   //
+        //   // //Push OR prepend/append tweet object
+        //   // twitterPostData.push(timelineData);
+        // });
+      }
+    }); //let's pass tweet data to client
+
+  // });
 
 });
-
-const T = Twit(config);
-
-const staticData = [];
-const twitterPostData = [];
-const followersData = [];
-const msgData = [];
 
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
@@ -82,12 +151,6 @@ T.get('followers/ids', { screen_name: config.screen_name },  function (err, data
 // Timeline data
   // *** CHANGE ITERATOR NUMBER ALONG WITH ANY CHANGE TO "count" VALUE, here the value is 5 ***
 T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
-
-  // *** Auth user avatar set from "normal" size to "bigger" size
-  staticData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
-
-  // *** Name of auth user
-  staticData.name = data[0].user.name;
 
   for( let i = 0; i < 5; i++ ){
 

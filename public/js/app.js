@@ -49,11 +49,11 @@
 
   });
 
-  socket.on('new tweet', function(data){
+  socket.on('new tweet', function( {timelineData} ){
 
     // Prepend what was actually tweeted with the T.post request
     // Data comes from socket w data param
-    $timeline.prepend('<div>' + data.tweet + '</div>');
+    $timeline.prepend('<div>' + timelineData.tweetText + ' ' + timelineData.name + '</div>');
 
   });
 // }();
