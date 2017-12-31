@@ -119,7 +119,6 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
     timelineData.tweetText = data[i].text;
 
     // *** Time since Tweet
-      // 'Thu Dec 21 17:10:36 +0000 2017'
     timelineData.timeSinceTweet = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
 
     // *** retweetCountOfTweet
@@ -161,7 +160,7 @@ T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (
 
 // Direct message data
   // *** CHANGE ITERATOR NUMBER ALONG WITH ANY CHANGE TO "count" VALUE, here the value is 5 ***
-T.get('direct_messages', { count: 5 }, function (err,data, res) {
+T.get('direct_messages', { count: 5 }, function (err, data, res) {
 
   for( let i = 0; i < 5; i++ ){
 
@@ -195,38 +194,16 @@ app.get('/', (req, res) => {
   res.locals.userAvatarImage = staticData.userAvatarImage;
   res.locals.name = staticData.name;
 
-  res.render('index', { twitterPostData, followersData, msgData });
+  res.render('index', { twitterPostData, followersData, msgData } );
 });
 
-//On Submit
-  // pop tweetObject off array of tweetObjects
-  // format the post request's tweet object using the below listed variables
-  // push this status update onto the array of tweetObjects
-//Create new tweet object
-  // timeSinceTweet, userAvatarImage, name, screen_name,
-    // tweetText (also argument of request), retweetCount, likeCount
-
-// app.post('/', (req, res) => {
-//     let T = new Twit(config);
-//     T.post('statuses/update', { status: req.body.newTweet }, (err, data) => {
-//         if (err) return res.send(err);
-//         let tweetData = {};
-//         tweetData.picture = data.user.profile_image_url;
-//         tweetData.author = '<h4>' + data.user.name + '</h4> @' + data.user.screen_name;
-//         tweetData.date = new Date(data.created_at).toLocaleString();
-//         tweetData.like = data.favorite_count;
-//         tweetData.retweet = data.retweet_count;
-//         tweetData.message = data.text;
-//         res.send(tweetData);
-//     });
-// });
 
 // **************************
 // ***** ERROR HANDLING *****
 // **************************
 
 app.use((req, res, next) => {
-  let err = new Error("Duplicate Tweet");
+  let err = new Error("Duplicate Tweet or rate limit reached");
   err.status = 403;
   next(err);
 });
