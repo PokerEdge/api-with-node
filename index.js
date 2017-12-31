@@ -1,4 +1,4 @@
-// Express initializes app to be a function handler
+// Express initializes 'app' to be a function handler
 const express = require('express');
 const app = express();
 
@@ -27,8 +27,8 @@ server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+// Open two-way connection between server and client
 io.sockets.on('connection', function(socket){
-  // Events we want to emit go into here
 
   console.log('A user has connected');
 
@@ -36,96 +36,46 @@ io.sockets.on('connection', function(socket){
     console.log('A user has disconnected');
   });
 
-  // "Send message" as per Traversy
-  //Post tweet to Timeline
-  //Submit validated data as POST request (this happens and is emitted to index.js)
-    //The post request after a "tweet" (just the text) is emitted to index.js should also contain
-    //the following data that is acquired within index.js
-      //Text of Tweet (emitted by socket on validated form submission)
-      //Time of Tweet
-      //username
-      //screen_name
-      //userAvatarImage
-      //retweetCountOfTweet
-      //likeCountOfTweet
+  // Event handler for 'on valid text submission on client'
   socket.on('tweet', function(data){
 
-    // // Logs out the tweet text in server console
-    // console.log(data);
+    T.post('statuses/update', {status: data}, function(err, data, res){
+      // Where data is acquired for newTweetData
 
-    //CREATES AND SENDS TWEET WITH THIS HANDLER: post request that is inside of emitter
-      if(data){
-        T.post('statuses/update',{status: data}, function(){
-
-          let timelineData = {};
-
-          // tweetText
-          timelineData.tweetText = data;
-
-          console.log(data); //Shows tweet
-
-          T.get('statuses/user_timeline', { screen_name: config.screen_name },  function (err, data, res) {
-
-            if(err){
-              //Handle error with a redirect
-            }
-
-            // userAvatarImage
-            timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
-
-            // name
-            timelineData.name = data[0].user.name;
-
-            // timeSinceTweet
-            timelineData.timeSinceTweet = moment(data.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
-
-            // // retweetCount
-            // timelineData.retweetCount = data.retweet_count;
-            //
-            // // likeCount
-            // timelineData.likeCount = data.favorite_count;
-
-          });
-
-          //Data passed back to the front end to populate a tweet object
-          io.sockets.emit('new tweet', { timelineData });
-
-          timelineData = {};
-
-        });
-        // // , function(){
+      if(err){
         //
-        //
-        //   //Create tweet object
-        //   timelineData = [];
-        //
-        //   console.log(data);
-        //
-        //   // // userAvatarImage
-        //   // timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
-        //   //
-        //   // // name
-        //   // timelineData.name = data[0].user.name;
-        //   //
-        //   // // tweetText
-        //   // timelineData.tweetText = data.tweet;
-        //   //
-        //   // // timeSinceTweet
-        //   // timelineData.timeSinceTweet = moment(data.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
-        //   //
-        //   // // retweetCount
-        //   // timelineData.retweetCount = data.retweet_count;
-        //   //
-        //   // // likeCount
-        //   // timelineData.likeCount = data.favorite_count;
-        //   //
-        //   // //Push OR prepend/append tweet object
-        //   // twitterPostData.push(timelineData);
-        // });
+          // Redirect to proper page (403 is redundant tweet AND rate limitation)
       }
-    }); //let's pass tweet data to client
 
-  // });
+      let newTweetData = {};
+
+        // *** Text of Tweet ( emitted by socket on validated form submission: {status:data} )
+        newTweetData.text = data.text;
+
+        // *** Time of Tweet
+        newTweetData.timeSinceTweet = moment(data.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
+
+        // *** username
+        newTweetData.name = data.user.name;
+
+        // *** screen_name
+        newTweetData.screen_name = data.user.screen_name;
+
+        // *** userAvatarImage
+        newTweetData.userAvatarImage = data.user.profile_image_url_https.replace("normal","bigger");
+
+        // *** retweetCountOfTweet
+        newTweetData.retweetCountOfTweet = 0;
+
+        // *** likeCountOfTweet
+        newTweetData.likeCountOfTweet = 0;
+
+        // *** emit {newTweetData} object back to client side to be used to contruct a styled timeline element
+        io.sockets.emit('new tweet', { newTweetData } );
+
+    });
+
+  });
 
 });
 
@@ -137,10 +87,13 @@ app.use(express.static(__dirname + '/public'));
 // ****************************
 
 T.get('users/profile_banner', { screen_name: config.screen_name },  function (err, data, res) {
-  //Prevent 404 error if no profile image is rendered for the auth user
+
+  // Check for 404 error if no profile image is rendered for the auth user
+  // If no profile image is found, the app displays a fallback background color
   if (!err) {
     staticData.profileImageURL = data.sizes.web_retina.url;
   }
+
 });
 
 // Friends count
