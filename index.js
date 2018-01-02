@@ -190,7 +190,7 @@ T.get('direct_messages', { count: 5 }, function (err, data, res) {
 
 app.get('/', (req, res) => {
 
-  //Static data
+  // Static data
   res.locals.screen_name = config.screen_name;
   res.locals.friends = staticData.friends;
   res.locals.profileImageURL = staticData.profileImageURL;
@@ -205,38 +205,18 @@ app.get('/', (req, res) => {
 // ***** ERROR HANDLING *****
 // **************************
 
-app.get('/error', (req, res) => {
-
-  let err = new Error("Page Not Found");
-
+// Handle 404 error
+app.use(function(req, res) {
   res.locals.screen_name = config.screen_name;
   res.locals.profileImageURL = staticData.profileImageURL;
-  res.locals.errStatus = 404;
-  res.locals.error = err;
-
-  res.render('error');
+  res.status(404);
+  res.render('404', {title: 'File Not Found', error: '404'});
 });
 
-app.get('/500', (req, res) => {
-
-  let err = new Error("Internal Server Error");
-
+// Handle 500 error
+app.use(function(err, req, res, next) {
   res.locals.screen_name = config.screen_name;
   res.locals.profileImageURL = staticData.profileImageURL;
-  res.locals.errStatus = 500;
-  res.locals.error = err;
-
-  res.render('500');
-});
-
-app.use( (req, res, next) => {
-
-  res.status(404).redirect('error');
-});
-
-app.use( (err, req, res, next) => {
-
-  console.error(err);
-  res.status(500).redirect('500');
-
+  res.status(500);
+  res.render('500', {title:'Internal Server Error', error: '500'});
 });
