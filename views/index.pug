@@ -1,7 +1,7 @@
 extends layout.pug
 
 block content
-  include includes/mixins/_tweet_input.pug
+  include includes/tweet_input.pug
   .bounds.app--body
     .app--section--header
       .grid-33
@@ -28,7 +28,7 @@ block content
           li
             h3
               | Conversation with 
-              a #{name}
+              a #{screen_name}
             ul.app--message--conversation
               include includes/mixins/_message_mixin.pug
   include includes/footer.pug

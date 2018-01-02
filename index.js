@@ -95,7 +95,9 @@ T.get('users/profile_banner', { screen_name: config.screen_name },  function (er
 // Friends count
 T.get('followers/ids', { screen_name: config.screen_name },  function (err, data, res) {
   if (err) { return next(err); }
-  staticData.friends = data.ids.length;
+  if(data){
+    staticData.friends = data.ids.length;
+  }
 });
 
 // Timeline data
@@ -106,30 +108,32 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
 
   for( let i = 0; i < 5; i++ ){
 
-    let timelineData = {};
+    if(data){
 
-    // *** Auth user avatar set from "normal" size to "bigger" size
-    timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+      let timelineData = {};
 
-    // *** Name of auth user
-    timelineData.name = data[0].user.name;
+      // *** Auth user avatar set from "normal" size to "bigger" size
+      timelineData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
 
-    // *** Tweet text of auth user
-    timelineData.tweetText = data[i].text;
+      // *** Name of auth user
+      timelineData.name = data[0].user.name;
 
-    // *** Time since Tweet
-    timelineData.timeSinceTweet = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
+      // *** Tweet text of auth user
+      timelineData.tweetText = data[i].text;
 
-    // *** retweetCountOfTweet
-    timelineData.retweetCount = data[i].retweet_count;
+      // *** Time since Tweet
+      timelineData.timeSinceTweet = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
 
-    // *** likeCountOfTweet
-    timelineData.likeCount = data[i].favorite_count;
+      // *** retweetCountOfTweet
+      timelineData.retweetCount = data[i].retweet_count;
 
-    twitterPostData.push(timelineData);
+      // *** likeCountOfTweet
+      timelineData.likeCount = data[i].favorite_count;
 
+      twitterPostData.push(timelineData);
+
+    }
   }
-
 });
 
 // Following data aka "friends" data
@@ -140,23 +144,25 @@ T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (
 
   for( let i = 0; i < 5; i++ ){
 
-    let friendsData = {};
+    if(data){
 
-    // *** Real name of friend
-    friendsData.friendName = data.users[i].name;
+      let friendsData = {};
 
-    // *** Screen name of friend
-    friendsData.friendScreenName = data.users[i].screen_name;
+      // *** Real name of friend
+      friendsData.friendName = data.users[i].name;
 
-    // *** Avatar of friend (bigger)
-    friendsData.friendAvatar = data.users[i].profile_image_url_https.replace("normal", "bigger");
+      // *** Screen name of friend
+      friendsData.friendScreenName = data.users[i].screen_name;
 
-    // *** Is auth user following friend? (boolean)
-    friendsData.isFriendFollowed = data.users[i].following;
+      // *** Avatar of friend (bigger)
+      friendsData.friendAvatar = data.users[i].profile_image_url_https.replace("normal", "bigger");
 
-    followersData.push(friendsData);
+      // *** Is auth user following friend? (boolean)
+      friendsData.isFriendFollowed = data.users[i].following;
+
+      followersData.push(friendsData);
+    }
   }
-
 });
 
 // Direct message data
@@ -167,21 +173,22 @@ T.get('direct_messages', { count: 5 }, function (err, data, res) {
 
   for( let i = 0; i < 5; i++ ){
 
-    let DMData = {};
+    if(data){
 
-    // *** Message sender's avatar
-    DMData.senderAvatar = data[i].sender.profile_image_url_https.replace("normal","bigger");
+      let DMData = {};
 
-    // *** Text from sender's message
-    DMData.senderMessage = data[i].text;
+      // *** Message sender's avatar
+      DMData.senderAvatar = data[i].sender.profile_image_url_https.replace("normal","bigger");
 
-    // *** Time from DM being sent
-    DMData.timeOfDM = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
+      // *** Text from sender's message
+      DMData.senderMessage = data[i].text;
 
-    msgData.push(DMData);
+      // *** Time from DM being sent
+      DMData.timeOfDM = moment(data[i].created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY').fromNow();
 
+      msgData.push(DMData);
+    }
   }
-
 });
 
 // ***********************
