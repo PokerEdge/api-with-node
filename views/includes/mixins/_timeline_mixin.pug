@@ -2,8 +2,8 @@ mixin createTimelineElement(tweetObject = {})
   li
     strong.app--tweet--timestamp #{tweetObject.timeSinceTweet}
     a.app--tweet--author
-      .app--avatar(style=`background-image: url(${tweetObject.userAvatarImage})`)
-        img(src=`background-image: url(${tweetObject.userAvatarImage})`)
+      .app--avatar(style=`background-image: url('${tweetObject.userAvatarImage}')`)
+        img(src=`background-image: url('${tweetObject.userAvatarImage}')`)
       h4 #{tweetObject.name}
       |  @#{screen_name}
     p #{tweetObject.tweetText}
@@ -36,13 +36,3 @@ mixin createTimelineElement(tweetObject = {})
 
 each tweet in twitterPostData
   +createTimelineElement(tweet)
-//- +timelineElement(appData)
-//- 
-//- TIMELINE ELEMENT WITH REST PARAMETER FOR WHEN SOCKET.IO UPDATES TIMELINE ARRAY
-//- 
-//- mixin list(id, ...items)
-//-   ul(id=id)
-//-     each item in items
-//-       li= item
-//- 
-//- +list('my-list', 1, 2, 3, 4)

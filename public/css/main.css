@@ -17,13 +17,14 @@
   margin-top: 2px;
 }
 
-/* ERROR ROUTE STYLES */
+/* ERROR ROUTES STYLES */
 .error-container {
   text-align: center;
 }
 
 .errorStyle,
-.fa-exclamation-circle {
+.fa-exclamation-circle,
+.fa-bug {
   color: rgb(29,161,242);
   margin-top: 2%;
 }

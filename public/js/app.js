@@ -1,4 +1,4 @@
-~function(){
+// ~function(){
   'use strict';
 
   const socket = io.connect();
@@ -91,4 +91,4 @@
       </li>`
     );
   }); //End socket connection
-}();
+// }();

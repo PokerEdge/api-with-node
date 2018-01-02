@@ -40,12 +40,8 @@ io.sockets.on('connection', function(socket){
   socket.on('tweet', function(data){
 
     T.post('statuses/update', {status: data}, function(err, data, res){
-      // Where data is acquired for newTweetData
 
-      if(err){
-        //
-          // Redirect to proper page (403 is redundant tweet AND rate limitation)
-      }
+      if (err) { return next(err); }
 
       let newTweetData = {};
 
@@ -98,12 +94,15 @@ T.get('users/profile_banner', { screen_name: config.screen_name },  function (er
 
 // Friends count
 T.get('followers/ids', { screen_name: config.screen_name },  function (err, data, res) {
+  if (err) { return next(err); }
   staticData.friends = data.ids.length;
 });
 
 // Timeline data
   // *** CHANGE ITERATOR NUMBER ALONG WITH ANY CHANGE TO "count" VALUE, here the value is 5 ***
 T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
+
+  if (err) { return next(err); }
 
   for( let i = 0; i < 5; i++ ){
 
@@ -137,6 +136,8 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
   // *** CHANGE ITERATOR NUMBER ALONG WITH ANY CHANGE TO "count" VALUE, here the value is 5 ***
 T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (err, data, res) {
 
+  if (err) { return next(err); }
+
   for( let i = 0; i < 5; i++ ){
 
     let friendsData = {};
@@ -161,6 +162,8 @@ T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (
 // Direct message data
   // *** CHANGE ITERATOR NUMBER ALONG WITH ANY CHANGE TO "count" VALUE, here the value is 5 ***
 T.get('direct_messages', { count: 5 }, function (err, data, res) {
+
+  if (err) { return next(err); }
 
   for( let i = 0; i < 5; i++ ){
 
@@ -202,29 +205,38 @@ app.get('/', (req, res) => {
 // ***** ERROR HANDLING *****
 // **************************
 
-app.use((req, res, next) => {
-  let err = new Error("Duplicate Tweet or rate limit reached");
-  err.status = 403;
-  next(err);
-});
+app.get('/error', (req, res) => {
 
-app.use((req, res, next) => {
   let err = new Error("Page Not Found");
-  err.status = 404;
-  next(err);
-});
 
-app.use((req, res, next) => {
-  let err = new Error("Internal Server Error");
-  err.status = 500;
-  next(err);
-});
-
-app.use((err, req, res, next) => {
   res.locals.screen_name = config.screen_name;
   res.locals.profileImageURL = staticData.profileImageURL;
+  res.locals.errStatus = 404;
   res.locals.error = err;
-  res.locals.errorStatus = err.status;
 
   res.render('error');
+});
+
+app.get('/500', (req, res) => {
+
+  let err = new Error("Internal Server Error");
+
+  res.locals.screen_name = config.screen_name;
+  res.locals.profileImageURL = staticData.profileImageURL;
+  res.locals.errStatus = 500;
+  res.locals.error = err;
+
+  res.render('500');
+});
+
+app.use( (req, res, next) => {
+
+  res.status(404).redirect('error');
+});
+
+app.use( (err, req, res, next) => {
+
+  console.error(err);
+  res.status(500).redirect('500');
+
 });
