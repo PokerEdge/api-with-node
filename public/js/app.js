@@ -12,7 +12,7 @@
   let tweetLength;
 
   // Handler to manage Tweet length and styles
-  $tweetForm.on('keyup', function(){
+  $tweetTextArea.on('keyup', function(e) {
 
     // tweetLength initializes on page load as 1 in Firefox, but as 0 in Chrome
     tweetLength = $tweetTextArea.val().length;
@@ -39,7 +39,7 @@
 
     } else { // Valid tweet
 
-      // *** emit tweet text to index.js
+      // *** Emit tweet text to index.js
       socket.emit('tweet', $tweetTextArea.val());
 
       // *** Resets for after valid submission
