@@ -1,4 +1,4 @@
-// ~function(){
+~function(){
   'use strict';
 
   const socket = io.connect();
@@ -14,7 +14,7 @@
   // Handler to manage Tweet length and styles
   $tweetTextArea.on('keyup', function(e) {
 
-    // tweetLength initializes on page load as 1 in Firefox, but as 0 in Chrome
+    // compatability issue: tweetLength initializes on page load as 1 in Firefox, but as 0 in Chrome
     tweetLength = $tweetTextArea.val().length;
     $tweetLengthDisplay.text(maxTweetLength - tweetLength);
 
@@ -25,7 +25,6 @@
     if ( tweetLength <= maxTweetLength && $tweetStyle.hasClass('invalidLength') ){
       $tweetStyle.removeClass('invalidLength');
     }
-
   });
 
 
@@ -46,7 +45,6 @@
       $tweetTextArea.val('');
       $tweetLengthDisplay.text(maxTweetLength);
     }
-
   });
 
   socket.on('new tweet', function( {newTweetData} ){
@@ -91,4 +89,4 @@
       </li>`
     );
   }); //End socket connection
-// }();
+}();

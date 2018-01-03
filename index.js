@@ -33,7 +33,9 @@ io.sockets.on('connection', function(socket){
   console.log('A user has connected');
 
   socket.on('disconnect', function(data){
+
     console.log('A user has disconnected');
+
   });
 
   // Event handler for 'on valid text submission on client'
@@ -70,9 +72,7 @@ io.sockets.on('connection', function(socket){
         io.sockets.emit('new tweet', { newTweetData } );
 
     });
-
   });
-
 });
 
 app.set('view engine', 'pug');
@@ -89,7 +89,6 @@ T.get('users/profile_banner', { screen_name: config.screen_name },  function (er
   if (!err) {
     staticData.profileImageURL = data.sizes.web_retina.url;
   }
-
 });
 
 // Friends count
@@ -106,9 +105,13 @@ T.get('statuses/user_timeline', { screen_name: config.screen_name, count: 5 },  
 
   if (err) { return next(err); }
 
+  if(data[0]){
+    staticData.userAvatarImage = data[0].user.profile_image_url_https.replace("normal", "bigger");
+  }
+
   for( let i = 0; i < 5; i++ ){
 
-    if(data){
+    if(data[i]){
 
       let timelineData = {};
 
@@ -144,7 +147,7 @@ T.get('friends/list', { screen_name: config.screen_name, count: 5 },  function (
 
   for( let i = 0; i < 5; i++ ){
 
-    if(data){
+    if(data.users[i]){
 
       let friendsData = {};
 
@@ -173,7 +176,7 @@ T.get('direct_messages', { count: 5 }, function (err, data, res) {
 
   for( let i = 0; i < 5; i++ ){
 
-    if(data){
+    if(data[i]){
 
       let DMData = {};
 
